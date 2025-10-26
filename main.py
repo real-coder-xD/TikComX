@@ -101,6 +101,17 @@ def read_list(file_path: str) -> list:
                 result.append(clean)
     return result
 
+def is_live_stream(tab_video: ChromiumPage):
+    try:
+        xpath_live = 'xpath://div[contains(@class, "DivLiveTagWrapper")]'
+        tab_live = tab_video.ele(xpath_live, timeout=1)
+        if tab_live:
+            return True
+        return False
+    except Exception:
+        return False
+
+
 path_comment = 'static/comment'
 comment_list = read_list(path_comment)
 
@@ -112,15 +123,18 @@ activateWindow()
 
 
 for index in range(1, 1000):
-    watched = random.sample(range(4, 9), 5)
+    watched = random.sample(range(5, 10), 5)
     total = sum(watched)
 
     color = random.choice(colors)
     comment = random.choice(comment_list)
 
-    print(f"{color}Watched: {index} -> {watched} {total}s")
-
     tab_video = scroll_video(browser, index)
+
+    if is_live_stream(tab_video):
+        continue
+
+    print(f"{color}Watched: {watched} {total}s")
 
     browser.wait(watched[0])
 
