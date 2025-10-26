@@ -53,11 +53,37 @@ def comment_video(tab_video: ChromiumPage, percent: int) -> object:
     except Exception:
         return object
 
+def press_like_video(tab_video: ChromiumPage, percent: int) -> object:
+    try:
+        if random.random() > percent / 100:
+            return object
+
+        xpath_icon = f'xpath://span[@data-e2e="like-icon"]'
+        tab_give_like = tab_video.ele(xpath_icon, timeout=4)
+        tab_give_like.scroll.to_center()
+        tab_give_like.click()
+        return tab_give_like
+    except Exception:
+        return object
+
+def favourite_video(tab_video: ChromiumPage, percent: int) -> object:
+    try:
+        if random.random() > percent / 100:
+            return object
+
+        xpath_icon = f'xpath://span[@data-e2e="undefined-icon"]'
+        tab_favourite = tab_video.ele(xpath_icon, timeout=4)
+        tab_favourite.scroll.to_center()
+        tab_favourite.click()
+        return tab_favourite
+    except Exception:
+        return object
+
 
 def comment_write(browser: ChromiumPage, text: str) -> object:
     try:
         xpath_input = f'xpath://div[@data-e2e="comment-text"]'
-        tab_comment = browser.ele(xpath_input, timeout=5)
+        tab_comment = browser.ele(xpath_input, timeout=4)
         tab_comment.scroll.to_center()
         tab_comment.click()
         tab_comment.input(text, clear=True)
@@ -86,17 +112,28 @@ activateWindow()
 
 
 for index in range(1, 1000):
+    watched = random.sample(range(4, 9), 5)
+    total = sum(watched)
+
     color = random.choice(colors)
-    print(color + f"Video: {index}")
+    comment = random.choice(comment_list)
+
+    print(f"{color}Watched: {index} -> {watched} {total}s")
 
     tab_video = scroll_video(browser, index)
-    browser.wait(random.randint(5, 9))
+
+    browser.wait(watched[0])
+
     comment_video(tab_video, 50)
+    browser.wait(watched[1])
 
-    browser.wait(random.randint(5, 9))
-    comment = random.choice(comment_list)
+    press_like_video(tab_video, 30)
+    browser.wait(watched[2])
+
+    favourite_video(tab_video, 10)
+    browser.wait(watched[3])
+
     comment_write(browser, comment)
-
-    browser.wait(random.randint(5, 9))
+    browser.wait(watched[4])
 
 browser.quit()
