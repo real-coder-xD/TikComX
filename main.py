@@ -33,7 +33,7 @@ def scroll_video(browser: ChromiumPage, index: int) -> object:
     try:
         ele_scroll = f'@data-scroll-index="{index}"'
         xpath_scroll = f'xpath://article[{ele_scroll}]'
-        tab_video = browser.ele(xpath_scroll, timeout=5)
+        tab_video = browser.ele(xpath_scroll, timeout=4)
         tab_video.scroll.to_center()
         return tab_video
     except Exception:
@@ -46,7 +46,7 @@ def comment_video(tab_video: ChromiumPage, percent: int) -> object:
             return object
 
         xpath_icon = f'xpath://span[@data-e2e="comment-icon"]'
-        tab_comment = tab_video.ele(xpath_icon, timeout=5)
+        tab_comment = tab_video.ele(xpath_icon, timeout=1)
         tab_comment.scroll.to_center()
         tab_comment.click()
         return tab_comment
@@ -59,7 +59,7 @@ def press_like_video(tab_video: ChromiumPage, percent: int) -> object:
             return object
 
         xpath_icon = f'xpath://span[@data-e2e="like-icon"]'
-        tab_give_like = tab_video.ele(xpath_icon, timeout=4)
+        tab_give_like = tab_video.ele(xpath_icon, timeout=1)
         tab_give_like.scroll.to_center()
         tab_give_like.click()
         return tab_give_like
@@ -72,7 +72,7 @@ def favourite_video(tab_video: ChromiumPage, percent: int) -> object:
             return object
 
         xpath_icon = f'xpath://span[@data-e2e="undefined-icon"]'
-        tab_favourite = tab_video.ele(xpath_icon, timeout=4)
+        tab_favourite = tab_video.ele(xpath_icon, timeout=1)
         tab_favourite.scroll.to_center()
         tab_favourite.click()
         return tab_favourite
@@ -83,7 +83,7 @@ def favourite_video(tab_video: ChromiumPage, percent: int) -> object:
 def comment_write(browser: ChromiumPage, text: str) -> object:
     try:
         xpath_input = f'xpath://div[@data-e2e="comment-text"]'
-        tab_comment = browser.ele(xpath_input, timeout=4)
+        tab_comment = browser.ele(xpath_input, timeout=1)
         tab_comment.scroll.to_center()
         tab_comment.click()
         tab_comment.input(text, clear=True)
@@ -109,7 +109,7 @@ def is_live_stream(tab_video: ChromiumPage):
             return True
         return False
     except Exception:
-        return False
+        return True
 
 
 path_comment = 'static/comment'
@@ -123,8 +123,7 @@ activateWindow()
 
 
 for index in range(1, 1000):
-    watched = random.sample(range(5, 10), 5)
-    total = sum(watched)
+    watched = random.sample(range(4, 9), 5)
 
     color = random.choice(colors)
     comment = random.choice(comment_list)
@@ -132,9 +131,10 @@ for index in range(1, 1000):
     tab_video = scroll_video(browser, index)
 
     if is_live_stream(tab_video):
+        browser.wait(1)
         continue
 
-    print(f"{color}Watched: {watched} {total}s")
+    print(f"{color}Watched: {watched} {sum(watched)}s")
 
     browser.wait(watched[0])
 
